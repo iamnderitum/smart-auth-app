@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
 
-        return user 
+        return user
 
 
 class User(AbstractBaseUser, PermissionsMixin,  models.Model):
@@ -58,12 +58,16 @@ class Profile(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="profile_user",
+        related_name="profile",
 
     )
-    bio = models.CharField(max_length=100)
+    dob = models.DateField(blank=True, null=True)
+    bio = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to="user_images", default="default.jpg")
+    gender = models.CharField(max_length=50, blank=True, null=True)
+    location = models.CharField(max_length=50, blank=True, null=True)
     verified = models.BooleanField(default=False)
+
 
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
@@ -74,3 +78,19 @@ class Profile(models.Model):
 
     post_save.connect(create_user_profile, sender=User)
     post_save.connect(save_user_profile, sender=User)
+
+
+class ContactInformation(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="contact",
+
+    )
+    phone = models.CharField(max_length=50)
+    alternate_email = models.EmailField()
+    address_line = models.CharField(max_length=60)
+    postal_code = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
