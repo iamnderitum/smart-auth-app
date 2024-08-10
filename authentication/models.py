@@ -8,8 +8,8 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db.models.signals import post_save
-from base.models import BaseModel
-from roles.models import Role
+# from base.models import BaseModel
+# from roles.models import Role
 
 
 class UserManager(BaseUserManager):
@@ -31,12 +31,12 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin, BaseModel):
+class User(AbstractBaseUser, PermissionsMixin,  models.Model):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
+
     # is_superuser = models.BooleanField(default=False)
 
     objects = UserManager()
@@ -54,7 +54,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     )
 
 
-class Profile(BaseModel):
+class Profile(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
